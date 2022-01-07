@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,68 +44,118 @@ import java.util.Queue;
 public class MainActivity extends AppCompatActivity {
     ArrayList<ImageModel> photos;
     RecyclerView recyclerView;
+    SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ImageView btn = findViewById(R.id.list_image);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), " In Development Thank You ", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        ImageView btn2 = findViewById(R.id.share_view);
-        btn2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), " In Development Comming Soon  ", Toast.LENGTH_SHORT).show();
-            }
-        });
         getimageapidata();
+
         photos = new ArrayList<>();
         TextView tooltxt = findViewById(R.id.tool_text);
         tooltxt.setText("HD Wallpapers");
         recyclerView = findViewById(R.id.ImageRecyclerview);
+        searchView = findViewById(R.id.search_q);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchimageapicall(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+               return false;
+            }
+        });
+    }
 
 
+    public void getimageapidata(){
+        String url = "https://api.unsplash.com/search/photos/?client_id=wo7f5-hNMfbAuGiOPxr4lit4_aZhe-Uq9h45u_kc75E&page=1&per_page=100&query=nature";
+        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONArray arr = response.getJSONArray("results");
+                            Toast.makeText(getApplicationContext(), "Size is " + arr.length() , Toast.LENGTH_SHORT).show();
+                            for(int i=0;i<arr.length();i++){
+                                ImageModel img = new ImageModel();
+                                JSONObject resultobject = (JSONObject) arr.get(i);
+                                img.setInfo(resultobject.getString("alt_description"));
+                                JSONObject urlobject = resultobject.getJSONObject("urls");
+                                img.setUrl(urlobject.getString("regular"));
+                                photos.add(img);
+
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        ImageAdapter adapter = new ImageAdapter(getApplication(),photos);
+                        recyclerView.setAdapter(adapter);
+                        recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
+
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO: Handle error
+
+                    }
+                });
+
+        // Access the RequestQueue through your singleton class.
+        queue.add(jsonObjectRequest);
 
 
     }
-    void getimageapidata(){
-        String url = "https://api.unsplash.com/photos/?client_id=wo7f5-hNMfbAuGiOPxr4lit4_aZhe-Uq9h45u_kc75E";
+    void searchimageapicall(String a){
+        String url = "https://api.unsplash.com/search/photos/?client_id=wo7f5-hNMfbAuGiOPxr4lit4_aZhe-Uq9h45u_kc75E&page=1&per_page=100&query="+a;
         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
-                for(int i=0;i<response.length();i++){
-                    try {
-                        ImageModel img = new ImageModel();
-                        JSONObject imageobject = response.getJSONObject(i);
-                        img.setInfo(imageobject.getString("description"));
-                        JSONObject urlobject = imageobject.getJSONObject("urls");
-                        img.setUrl(urlobject.getString("regular"));
-                        photos.add(img);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONArray arr = response.getJSONArray("results");
+                            for(int i=0;i<response.length();i++){
+                                ImageModel img = new ImageModel();
+                                JSONObject resultobject = (JSONObject) arr.get(i);
+                                img.setInfo(resultobject.getString("alt_description"));
+                                JSONObject urlobject = resultobject.getJSONObject("urls");
+                                img.setUrl(urlobject.getString("regular"));
+                                photos.add(img);
+
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        ImageAdapter adapter = new ImageAdapter(getApplication(),photos);
+                        recyclerView.setAdapter(adapter);
+                        recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
+
                     }
-                    ImageAdapter adapter = new ImageAdapter(getApplication(),photos);
-                    recyclerView.setAdapter(adapter);
-                    recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
+                }, new Response.ErrorListener() {
 
-                }
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO: Handle error
 
-            }
-        },new Response.ErrorListener(){
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(), "Something Went's Wrong Check Your Internet", Toast.LENGTH_SHORT).show();
+                    }
+                });
 
-            }
-        });
-        queue.add(jsonArrayRequest);
+        // Access the RequestQueue through your singleton class.
+        queue.add(jsonObjectRequest);
+
+
+
 
     }
 

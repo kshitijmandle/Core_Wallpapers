@@ -3,42 +3,36 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
-    android:background="#222223"
+    android:background="#141439"
     android:id="@+id/Top_toolbar"
     android:theme="@style/ThemeOverlay.AppCompat.Dark"
     >
+
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
-        <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:id="@+id/list_image"
-            android:padding="10dp"
-            android:src="@android:drawable/ic_menu_sort_by_size"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="70dp"
+        android:layout_height="match_parent">
 
 
-            />
-        <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:padding="10dp"
-            android:id="@+id/share_view"
-            android:src="@android:drawable/ic_menu_share"
+        <SearchView
+            android:id="@+id/search_q"
+            android:layout_width="225dp"
+            android:layout_height="match_parent"
             android:layout_alignParentRight="true"
-            />
+            android:background="#141439"
+            android:queryHint="Search for images"
+
+
+
+            android:src="@android:drawable/ic_search_category_default" />
+
         <TextView
+            android:id="@+id/tool_text"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:textSize="20dp"
-            android:id="@+id/tool_text"
-            android:textStyle="bold"
-            android:text="ToolBar"
             android:padding="10dp"
-            />
+            android:text="HD Wallpapers"
+            android:textSize="20dp"
+            android:textStyle="bold" />
 
 
     </RelativeLayout>
