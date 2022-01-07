@@ -4,6 +4,7 @@ package com.learn.corewallpapers;
 import static java.security.AccessController.getContext;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -15,20 +16,33 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
+import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.JsonRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.learn.corewallpapers.adapters.ImageAdapter;
 import com.learn.corewallpapers.adapters.ImageModel;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Queue;
 
 public class MainActivity extends AppCompatActivity {
+    ArrayList<ImageModel> photos;
+    RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,58 +63,49 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), " In Development Comming Soon  ", Toast.LENGTH_SHORT).show();
             }
         });
+        getimageapidata();
+        photos = new ArrayList<>();
         TextView tooltxt = findViewById(R.id.tool_text);
-        tooltxt.setText("HD WallPaper");
-        RecyclerView recyclerView = findViewById(R.id.ImageRecyclerview);
-        ArrayList<ImageModel> data = new ArrayList<>();
-        data.add(new ImageModel(R.drawable.wallpaper3,"BlackEye"));
-        data.add(new ImageModel(R.drawable.fbimg10,"Crushmika"));
-        data.add(new ImageModel(R.drawable.wallpaper7,"Mustang Dodge"));
-        data.add(new ImageModel(R.drawable.wallpaper4,"CyberHacker"));
-        data.add(new ImageModel(R.drawable.fbimg8,"Crushmika"));
-        data.add(new ImageModel(R.drawable.fbimg9,"Crushmika"));
-        data.add(new ImageModel(R.drawable.wallpaper1,"Night"));
-        data.add(new ImageModel(R.drawable.wallpaper5,"Rami malek"));
-        data.add(new ImageModel(R.drawable.fbimg,"Crushmika"));
-        //data.add(new ImageModel(R.drawable.wallpaper6,"Elliot"));
-        data.add(new ImageModel(R.drawable.fbimg11,"Crushmika"));
-        data.add(new ImageModel(R.drawable.fbimg3,"Crushmika"));
-        data.add(new ImageModel(R.drawable.fbimg1,"Crushmika"));
-        data.add(new ImageModel(R.drawable.fbimg4,"Crushmika"));
-        data.add(new ImageModel(R.drawable.fbimg5,"Crushmika"));
-        //data.add(new ImageModel(R.drawable.wallpaper2,"Alone"));
-        data.add(new ImageModel(R.drawable.wallpaper8,"Rami malek"));
-        ImageAdapter adapter = new ImageAdapter(getApplication(),data);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        tooltxt.setText("HD Wallpapers");
+        recyclerView = findViewById(R.id.ImageRecyclerview);
 
 
 
 
     }
-  public void ImageAPICALL(){
-      String url = "http://my-json-feed";
+    void getimageapidata(){
+        String url = "https://api.unsplash.com/photos/?client_id=wo7f5-hNMfbAuGiOPxr4lit4_aZhe-Uq9h45u_kc75E";
+        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                for(int i=0;i<response.length();i++){
+                    try {
+                        ImageModel img = new ImageModel();
+                        JSONObject imageobject = response.getJSONObject(i);
+                        img.setInfo(imageobject.getString("description"));
+                        JSONObject urlobject = imageobject.getJSONObject("urls");
+                        img.setUrl(urlobject.getString("regular"));
+                        photos.add(img);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    ImageAdapter adapter = new ImageAdapter(getApplication(),photos);
+                    recyclerView.setAdapter(adapter);
+                    recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
 
-      JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-              (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                }
 
-                  @Override
-                  public void onResponse(JSONObject response) {
-                     // JSONArray Arr = response.getJSONArray();
+            }
+        },new Response.ErrorListener(){
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(), "Something Went's Wrong Check Your Internet", Toast.LENGTH_SHORT).show();
 
-                  }
-              }, new Response.ErrorListener() {
+            }
+        });
+        queue.add(jsonArrayRequest);
 
-                  @Override
-                  public void onErrorResponse(VolleyError error) {
-                      // TODO: Handle error
+    }
 
-                  }
-              });
-
-              // Access the RequestQueue through your singleton class.
-
-
-
-  }
 }
