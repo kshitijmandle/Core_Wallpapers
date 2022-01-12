@@ -73,7 +73,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.viewholder>{
         public void onClick(View v) {
             int Image_position = this.getAdapterPosition();
             ImageModel temp = data.get(Image_position);
-            //Toast.makeText(itemView.getContext(), "Onclik " + Image_position , Toast.LENGTH_SHORT).show();
+
             Intent intent = new Intent(ctx.getApplicationContext(), ClikedActivity.class);
             intent.putExtra("WALLPAPER",temp.getUrl());
             intent.putExtra("WALLPAPER_INFO",temp.getInfo());
