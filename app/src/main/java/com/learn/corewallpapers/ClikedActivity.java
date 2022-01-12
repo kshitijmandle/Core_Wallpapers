@@ -5,12 +5,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.app.WallpaperManager;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
 
 import java.io.IOException;
 
@@ -20,38 +26,45 @@ public class ClikedActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cliked);
-        int id = getIntent().getIntExtra("IMAGE",0);
-        TextView txt = findViewById(R.id.tool_text);
-        txt.setText("Set Wallpaper");
-        ImageView image = findViewById(R.id.imageView);
-        Button set = findViewById(R.id.btn_setwallpaper);
-        image.setImageResource(id);
-        setwallpaper(set,id);
-    }
-    public void setwallpaper(Button bSetWallpaper , int id){
-
-        // creating the instance of the WallpaperManager
-                final WallpaperManager wallpaperManager = WallpaperManager.getInstance(getApplicationContext());
-
-                // handle the set wallpaper button to set the desired wallpaper for home screen
-
-                bSetWallpaper.setOnClickListener(new View.OnClickListener() {
-                    @SuppressLint("ResourceType")
-                    @Override
-                    public void onClick(View v) {
-                        try {
-                            // set the wallpaper by calling the setResource function and
-                            // passing the drawable file
-                            wallpaperManager.setResource(id);
-                            Toast.makeText(getApplicationContext(), " New Wallpaper sets ! ", Toast.LENGTH_LONG).show();
-                            finish();
-                        } catch (IOException e) {
-                            // here the errors can be logged instead of printStackTrace
-                            e.printStackTrace();
-                        }
-                    }
-                });
-            }
+        String URL_IMG = getIntent().getStringExtra("WALLPAPER");
+        String URL_DESC = getIntent().getStringExtra("WALLPAPER_INFO");
+        int n = URL_DESC.compareTo("null");
+        if(n==1){
+            URL_DESC = "No Description";
         }
+        ImageButton backbutten = findViewById(R.id.backbutten);
+        ImageView photo = findViewById(R.id.home_photo);
+        Glide.with(getApplicationContext()).load(URL_IMG).into(photo);
+        backbutten.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        TextView setwallpaper = findViewById(R.id.setwallpaper);
+        setwallpaper.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bitmap bitmap = ((BitmapDrawable)photo.getDrawable()).getBitmap();
+                WallpaperManager manager = WallpaperManager.getInstance(getApplicationContext());
+                try {
+                    manager.setBitmap(bitmap);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                Toast.makeText(getApplicationContext(), " WallPaper Set SuccessFully ! ", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        TextView description = findViewById(R.id.des_info);
+        description.setText(URL_DESC);
 
 
+    }
+
+
+
+
+}

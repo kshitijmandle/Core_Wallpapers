@@ -24,10 +24,10 @@ import java.util.List;
 
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.viewholder>{
     Context ctx;
-    ArrayList<ImageModel> data;
-    public ImageAdapter(Context ctx, ArrayList<ImageModel> data){
+    ArrayList<ImageModel> data = new ArrayList<>();
+    public ImageAdapter(Context ctx,ArrayList<ImageModel> data){
         this.ctx = ctx;
-        this.data = data;
+
 
     }
 
@@ -41,7 +41,6 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.viewholder>{
     @Override
     public void onBindViewHolder(@NonNull viewholder holder, int position) {
         ImageModel temp = data.get(position);
-        holder.Name.setText(temp.getInfo());
         Glide.with(holder.itemView.getContext()).load(temp.getUrl()).into(holder.Image);
 
     }
@@ -51,16 +50,22 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.viewholder>{
         return data.size();
     }
 
+    public void updatedata(ArrayList<ImageModel> kali){
+        data.clear();
+        data.addAll(kali);
+        notifyDataSetChanged();
+    }
+
 
 
     public class viewholder extends RecyclerView.ViewHolder implements View.OnClickListener{
         ImageView Image;
-        TextView Name;
+
 
         public viewholder(@NonNull View itemView) {
             super(itemView);
             Image = itemView.findViewById(R.id.WallpaperImage);
-            Name = itemView.findViewById(R.id.WallpaperName);
+
             itemView.setOnClickListener(this);
         }
 
@@ -70,6 +75,8 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.viewholder>{
             ImageModel temp = data.get(Image_position);
             //Toast.makeText(itemView.getContext(), "Onclik " + Image_position , Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(ctx.getApplicationContext(), ClikedActivity.class);
+            intent.putExtra("WALLPAPER",temp.getUrl());
+            intent.putExtra("WALLPAPER_INFO",temp.getInfo());
 
             ctx.startActivity(intent);
 

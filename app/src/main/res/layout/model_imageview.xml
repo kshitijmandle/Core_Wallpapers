@@ -3,46 +3,37 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:background="#737577"
+    android:background="#070606"
     android:layout_height="wrap_content"
 
     >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#09080C"
+        android:layout_height="300dp"
+        android:background="#C6939298"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_margin="5dp"
+        android:layout_margin="3dp"
+
         >
 
         <ImageView
             android:id="@+id/WallpaperImage"
-            android:layout_width="200dp"
-            android:layout_height="300dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0"
-            android:scaleType="centerInside"
+            android:scaleType="centerCrop"
             android:adjustViewBounds="true"
-            app:srcCompat="@drawable/fbimg3" />
+            app:srcCompat="@drawable/ic_launcher_background" />
 
-        <TextView
-            android:id="@+id/WallpaperName"
-            android:layout_width="match_parent"
-            android:layout_height="25dp"
-            android:text="Crushmika"
-            android:textColor="@color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/WallpaperImage"
-            app:layout_constraintVertical_bias="0.038" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

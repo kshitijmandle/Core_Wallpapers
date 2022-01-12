@@ -4,6 +4,7 @@ package com.learn.corewallpapers;
 import static java.security.AccessController.getContext;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -30,6 +31,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.learn.corewallpapers.adapters.CustumLoader;
 import com.learn.corewallpapers.adapters.ImageAdapter;
 import com.learn.corewallpapers.adapters.ImageModel;
 
@@ -40,26 +42,34 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
-    ArrayList<ImageModel> photos;
     RecyclerView recyclerView;
     SearchView searchView;
+    ImageAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getimageapidata();
+        CustumLoader loader = new CustumLoader(MainActivity.this);
+        loader.startload();
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                loader.dissmissdialog();
 
-        photos = new ArrayList<>();
-        TextView tooltxt = findViewById(R.id.tool_text);
-        tooltxt.setText("HD Wallpapers");
+            }
+        },5000);
         recyclerView = findViewById(R.id.ImageRecyclerview);
         searchView = findViewById(R.id.search_q);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+
                 searchimageapicall(query);
                 return true;
             }
@@ -70,11 +80,18 @@ public class MainActivity extends AppCompatActivity {
                return false;
             }
         });
+
     }
 
 
     public void getimageapidata(){
-        String url = "https://api.unsplash.com/search/photos/?client_id=wo7f5-hNMfbAuGiOPxr4lit4_aZhe-Uq9h45u_kc75E&page=1&per_page=100&query=nature";
+        String RandomImages[] = {"cats","dogs","nature","nights","cars","computers","skys","sea","beach","plants","forests"};
+        Random rand = new Random();
+        int randomnumber = rand.nextInt(10);
+        String QeryString = RandomImages[randomnumber];
+
+        ArrayList<ImageModel> photos = new ArrayList<>();
+        String url = "https://api.unsplash.com/search/photos/?client_id=wo7f5-hNMfbAuGiOPxr4lit4_aZhe-Uq9h45u_kc75E&page=1&per_page=100&query="+QeryString;
         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -87,18 +104,21 @@ public class MainActivity extends AppCompatActivity {
                             for(int i=0;i<arr.length();i++){
                                 ImageModel img = new ImageModel();
                                 JSONObject resultobject = (JSONObject) arr.get(i);
-                                img.setInfo(resultobject.getString("alt_description"));
+                                img.setInfo(resultobject.getString("description"));
                                 JSONObject urlobject = resultobject.getJSONObject("urls");
                                 img.setUrl(urlobject.getString("regular"));
                                 photos.add(img);
 
                             }
+                            adapter = new ImageAdapter(getApplication(),photos);
+                            adapter.updatedata(photos);
+                            recyclerView.setAdapter(adapter);
+                            recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        ImageAdapter adapter = new ImageAdapter(getApplication(),photos);
-                        recyclerView.setAdapter(adapter);
-                        recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
+
+
 
                     }
                 }, new Response.ErrorListener() {
@@ -116,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
     void searchimageapicall(String a){
+        ArrayList<ImageModel> photos = new ArrayList<>();
         String url = "https://api.unsplash.com/search/photos/?client_id=wo7f5-hNMfbAuGiOPxr4lit4_aZhe-Uq9h45u_kc75E&page=1&per_page=100&query="+a;
         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
@@ -125,21 +146,25 @@ public class MainActivity extends AppCompatActivity {
                     public void onResponse(JSONObject response) {
                         try {
                             JSONArray arr = response.getJSONArray("results");
-                            for(int i=0;i<response.length();i++){
+                            for(int i=0;i<arr.length();i++){
                                 ImageModel img = new ImageModel();
                                 JSONObject resultobject = (JSONObject) arr.get(i);
-                                img.setInfo(resultobject.getString("alt_description"));
+                                img.setInfo(resultobject.getString("description"));
+                                //Log.d("KALI-LEN", "onResponse: " + resultobject.getString("alt_description"));
                                 JSONObject urlobject = resultobject.getJSONObject("urls");
                                 img.setUrl(urlobject.getString("regular"));
                                 photos.add(img);
 
                             }
+                            adapter = new ImageAdapter(getApplication(),photos);
+                            adapter.updatedata(photos);
+                            recyclerView.setAdapter(adapter);
+                            recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        ImageAdapter adapter = new ImageAdapter(getApplication(),photos);
-                        recyclerView.setAdapter(adapter);
-                        recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
+
+
 
                     }
                 }, new Response.ErrorListener() {
@@ -158,5 +183,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
 
 }
