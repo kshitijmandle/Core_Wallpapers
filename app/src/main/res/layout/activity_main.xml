@@ -7,9 +7,7 @@
     android:background="#070303"
     tools:context=".MainActivity" >
 
-    <include
-        android:id="@+id/include"
-        layout="@layout/toolbar_h" />
+   <include layout="@layout/toolbar_h"/>
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -21,6 +19,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
+        <ProgressBar
+            android:id="@+id/progbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/ImageRecyclerview"

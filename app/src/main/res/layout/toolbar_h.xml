@@ -15,11 +15,15 @@
 
         <SearchView
             android:id="@+id/search_q"
-            android:layout_width="300dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
+            android:layout_marginLeft="150dp"
             android:background="#141439"
-            android:queryHint="Images"
+            android:padding="5dp"
+            android:inputType="textNoSuggestions"
+            android:textAlignment="center"
+            android:queryBackground="@color/cardview_dark_background"
+            app:showAsAction="collapseActionView"
             android:src="@android:drawable/ic_search_category_default" />
 
         <TextView
@@ -28,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
             android:padding="10dp"
-            android:text="Search"
+            android:text="CoreWallPapers"
             android:textSize="19dp"
             android:textStyle="bold" />
 

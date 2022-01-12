@@ -6,9 +6,12 @@ import static java.security.AccessController.getContext;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,6 +46,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerView;
@@ -53,23 +58,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getimageapidata();
-        CustumLoader loader = new CustumLoader(MainActivity.this);
-        loader.startload();
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                loader.dissmissdialog();
 
-            }
-        },5000);
+        getimageapidata();
         recyclerView = findViewById(R.id.ImageRecyclerview);
         searchView = findViewById(R.id.search_q);
+        searchView.setQueryHint("Search Here");
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-
                 searchimageapicall(query);
                 return true;
             }
@@ -82,9 +78,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
-
     public void getimageapidata(){
+
         String RandomImages[] = {"cats","dogs","nature","nights","cars","computers","skys","sea","beach","plants","forests"};
         Random rand = new Random();
         int randomnumber = rand.nextInt(10);
