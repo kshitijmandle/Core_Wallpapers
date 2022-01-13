@@ -6,8 +6,9 @@
     android:layout_height="match_parent"
     android:background="#070303"
     tools:context=".MainActivity" >
+    <include layout="@layout/toolbar_h"/>
 
-   <include layout="@layout/toolbar_h"/>
+
 
 
     <androidx.constraintlayout.widget.ConstraintLayout

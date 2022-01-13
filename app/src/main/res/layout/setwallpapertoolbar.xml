@@ -10,31 +10,32 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="#51FFFDFD"
+        >
+        <ImageView
+            android:layout_width="30dp"
+            android:id="@+id/backbuuten"
+            android:layout_height="match_parent"
+            android:src="@drawable/backbutten"
+            android:layout_margin="10dp"
+            />
 
         <TextView
             android:id="@+id/setwallpaper"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
+            android:layout_marginTop="5dp"
             android:padding="10dp"
             android:text="Set WallPaper"
-            android:textColor="#fff"
+            android:textColor="#040303"
+            android:background="#D1D1D1"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="20dp"
-            android:textSize="20dp"
+            android:layout_marginRight="10dp"
+            android:textSize="15dp"
             android:textStyle="bold" />
 
-        <ImageButton
-            android:id="@+id/backbutten"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="5dp"
-            android:src="@android:drawable/ic_menu_revert" />
+
 
 
     </RelativeLayout>
